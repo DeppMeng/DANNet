@@ -77,9 +77,11 @@ def get_arguments():
     parser.add_argument("--set", type=str, default=SET,
                         help="choose adaptation set.")
     parser.add_argument("--std", type=float, default=STD)
-    
+
     # distributed training parameters
     parser.add_argument('--world_size', default=1, type=int,
+                        help='number of distributed processes')
+    parser.add_argument('--local_rank', default=0, type=int,
                         help='number of distributed processes')
     parser.add_argument('--dist_url', default='env://', help='url used to set up distributed training')
 
