@@ -64,6 +64,7 @@ def main():
             new_params['.'.join(i_parts[0:])] = saved_state_dict[i]
     model.load_state_dict(new_params)
 
+    model.to(device)
     # DDP for model
     model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
     model = nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu])
