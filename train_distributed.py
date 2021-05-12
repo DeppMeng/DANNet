@@ -64,29 +64,30 @@ def main():
             new_params['.'.join(i_parts[0:])] = saved_state_dict[i]
     model.load_state_dict(new_params)
 
+    model.train()
     model.to(device)
     # DDP for model
     model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
     model = nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu])
 
-    model.train()
-    model.to(device)
 
     lightnet = LightNet()
     lightnet.train()
     lightnet.to(device)
+    lightnet = nn.SyncBatchNorm.convert_sync_batchnorm(lightnet)
+    lightnet = nn.parallel.DistributedDataParallel(lightnet, device_ids=[args.gpu])
 
     model_D1 = FCDiscriminator(num_classes=args.num_classes)
-    model_D1 = nn.parallel.DistributedDataParallel(model_D1, device_ids=[args.gpu])
-
     model_D1.train()
     model_D1.to(device)
-
-    model_D2 = FCDiscriminator(num_classes=args.num_classes)
     model_D1 = nn.parallel.DistributedDataParallel(model_D1, device_ids=[args.gpu])
 
+
+    model_D2 = FCDiscriminator(num_classes=args.num_classes)
     model_D2.train()
     model_D2.to(device)
+    model_D1 = nn.parallel.DistributedDataParallel(model_D1, device_ids=[args.gpu])
+
 
     if not os.path.exists(args.snapshot_dir):
         os.makedirs(args.snapshot_dir)
