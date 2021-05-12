@@ -11,7 +11,7 @@ SET = 'train'
 DATA_DIRECTORY = '../data/cityscape'
 DATA_LIST_PATH = './dataset/lists/cityscapes_train.txt'
 INPUT_SIZE = '512'
-DATA_DIRECTORY_TARGET = '../data/Dark_Zurich_train_anon/rgb_anon'
+DATA_DIRECTORY_TARGET = '../data/Dark_Zurich/rgb_anon/train'
 DATA_LIST_PATH_TARGET = './dataset/lists/zurich_dn_pair_train.csv'
 INPUT_SIZE_TARGET = '960'
 

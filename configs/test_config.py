@@ -1,7 +1,7 @@
 import argparse
 
 # validation set path
-DATA_DIRECTORY = '../data/Dark_Zurich_val_anon/rgb_anon/val'
+DATA_DIRECTORY = '../data/Dark_Zurich/rgb_anon/val'
 DATA_LIST_PATH = './dataset/lists/zurich_val.txt'
 
 # test set path
