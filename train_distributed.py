@@ -68,25 +68,25 @@ def main():
     model.to(device)
     # DDP for model
     model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
-    model = nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu])
+    model = nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu], find_unused_parameters=True)
 
 
     lightnet = LightNet()
     lightnet.train()
     lightnet.to(device)
     lightnet = nn.SyncBatchNorm.convert_sync_batchnorm(lightnet)
-    lightnet = nn.parallel.DistributedDataParallel(lightnet, device_ids=[args.gpu])
+    lightnet = nn.parallel.DistributedDataParallel(lightnet, device_ids=[args.gpu], find_unused_parameters=True)
 
     model_D1 = FCDiscriminator(num_classes=args.num_classes)
     model_D1.train()
     model_D1.to(device)
-    model_D1 = nn.parallel.DistributedDataParallel(model_D1, device_ids=[args.gpu])
+    model_D1 = nn.parallel.DistributedDataParallel(model_D1, device_ids=[args.gpu], find_unused_parameters=True)
 
 
     model_D2 = FCDiscriminator(num_classes=args.num_classes)
     model_D2.train()
     model_D2.to(device)
-    model_D1 = nn.parallel.DistributedDataParallel(model_D1, device_ids=[args.gpu])
+    model_D1 = nn.parallel.DistributedDataParallel(model_D1, device_ids=[args.gpu], find_unused_parameters=True)
 
 
     if not os.path.exists(args.snapshot_dir):
@@ -289,7 +289,7 @@ def main():
                 i_iter, args.num_steps, loss_seg_value,
                 loss_adv_target_value, loss_D_value1, loss_D_value2, loss_pseudo))
 
-        if i_iter % args.save_pred_every == 0 and i_iter != 0:
+        if i_iter % args.save_pred_every == 0 and i_iter != 0 and args.local_rank == 0:
             print('taking snapshot ...')
             torch.save(model.state_dict(), os.path.join(args.snapshot_dir, 'dannet' + str(i_iter) + '.pth'))
             torch.save(lightnet.state_dict(), os.path.join(args.snapshot_dir, 'dannet_light' + str(i_iter) + '.pth'))
