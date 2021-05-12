@@ -8,7 +8,7 @@ ITER_SIZE = 1
 NUM_WORKERS = 2
 
 SET = 'train'
-DATA_DIRECTORY = '../data/cityscape'
+DATA_DIRECTORY = '../data/cityscapes'
 DATA_LIST_PATH = './dataset/lists/cityscapes_train.txt'
 INPUT_SIZE = '512'
 DATA_DIRECTORY_TARGET = '../data/Dark_Zurich/rgb_anon'
