@@ -19,7 +19,7 @@ class zurich_night_DataSet(data.Dataset):
         self.transform = val_input_transform
 
         self.img_ids = [i_id.strip() for i_id in open(list_path)]
-        if not max_iters==None:
+        if not max_iters == None:
             self.img_ids = self.img_ids * int(np.ceil(float(max_iters) / len(self.img_ids)))
         self.files = []
         self.set = set

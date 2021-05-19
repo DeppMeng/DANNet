@@ -93,17 +93,18 @@ def main():
         output = Image.fromarray(output)
 
         ###### get the enhanced image
-        # enhancement = enhancement.cpu().data[0].numpy().transpose(1,2,0)
-        # enhancement = enhancement*mean_std[1]+mean_std[0]
-        # enhancement = (enhancement-enhancement.min())/(enhancement.max()-enhancement.min())
-        # enhancement = enhancement[:, :, ::-1]*255  # change to BGR
-        # enhancement = Image.fromarray(enhancement.astype(np.uint8))
+        mean_std = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+        enhancement = enhancement.cpu().data[0].numpy().transpose(1,2,0)
+        enhancement = enhancement * mean_std[1] + mean_std[0]
+        enhancement = (enhancement - enhancement.min()) / (enhancement.max()-enhancement.min())
+        enhancement = enhancement[:, :, ::-1] * 255  # change to BGR
+        enhancement = Image.fromarray(enhancement.astype(np.uint8))
 
         ###### get the light
-        # light = r.cpu().data[0].numpy().transpose(1,2,0)
-        # light = (light-light.min())/(light.max()-light.min())
-        # light = light[:, :, ::-1]*255  # change to BGR
-        # light = Image.fromarray(light.astype(np.uint8))
+        light = r.cpu().data[0].numpy().transpose(1, 2, 0)
+        light = (light-light.min()) / (light.max() - light.min())
+        light = light[:, :, ::-1] * 255  # change to BGR
+        light = Image.fromarray(light.astype(np.uint8))
 
 
         name = name[0].split('/')[-1]

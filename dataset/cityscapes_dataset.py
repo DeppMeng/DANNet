@@ -11,9 +11,10 @@ class cityscapesDataSet(data.Dataset):
         self.root = root
         self.list_path = list_path
 
+        mean_std = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
         train_input_transform = []
         train_input_transform += [standard_transforms.ToTensor(),
-                                  standard_transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])]
+                                  standard_transforms.Normalize(*mean_std)]
 
         cityscape_transform_list = [joint_transforms.RandomSizeAndCrop(args.input_size, False, pre_size=None,
                                                                        scale_min=0.5, scale_max=1.0, ignore_index=255),
