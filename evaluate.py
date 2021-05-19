@@ -110,8 +110,8 @@ def main():
         name = name[0].split('/')[-1]
         output.save('%s/%s' % (args.save, name))
         output_col.save('%s/%s_color.png' % (args.save, name.split('.')[0]))
-        # enhancement.save('%s/%s_enhancement.png' % (args.save, name.split('.')[0]))
-        # light.save('%s/%s_light.png' % (args.save, name.split('.')[0]))
+        enhancement.save('%s/%s_enhancement.png' % (args.save, name.split('.')[0]))
+        light.save('%s/%s_light.png' % (args.save, name.split('.')[0]))
 
 
 if __name__ == '__main__':
