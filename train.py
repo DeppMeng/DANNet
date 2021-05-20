@@ -146,7 +146,7 @@ def main():
             mean_light = images_n.mean()
             r = lightnet(images_d)
             enhanced_images_d = images_d + r
-            loss_enhance = 10*loss_TV(r)+torch.mean(loss_SSIM(enhanced_images_d, images_d))\
+            loss_enhance_d = 10*loss_TV(r)+torch.mean(loss_SSIM(enhanced_images_d, images_d))\
                            +torch.mean(loss_exp_z(enhanced_images_d, mean_light))
 
             if args.model == 'RefineNet':
@@ -157,7 +157,7 @@ def main():
             D_out_d = model_D1(F.softmax(pred_target_d, dim=1))
             D_label_d = torch.FloatTensor(D_out_d.data.size()).fill_(source_label).to(device)
             loss_adv_target_d = weightedMSE(D_out_d, D_label_d)
-            loss = 0.01 * loss_adv_target_d + 0.01 * loss_enhance
+            loss = 0.01 * loss_adv_target_d + 0.01 * loss_enhance_d
             loss = loss / args.iter_size
             loss.backward()
 
@@ -165,7 +165,7 @@ def main():
             images_n = images_n.to(device)
             r = lightnet(images_n)
             enhanced_images_n = images_n + r
-            loss_enhance = 10*loss_TV(r)+torch.mean(loss_SSIM(enhanced_images_n, images_n))\
+            loss_enhance_n = 10*loss_TV(r)+torch.mean(loss_SSIM(enhanced_images_n, images_n))\
                            + torch.mean(loss_exp_z(enhanced_images_n, mean_light))
 
             if args.model == 'RefineNet':
@@ -191,7 +191,7 @@ def main():
             loss_adv_target_n_19 = weightedMSE(D_out_n_19, D_label_n_19,)
 
             loss_pseudo = static_loss(pred_target_n[:,:11,:,:], psudo_gt)
-            loss = 0.01 * loss_adv_target_n_19 + loss_pseudo + 0.01 * loss_enhance
+            loss = 0.01 * loss_adv_target_n_19 + loss_pseudo + 0.01 * loss_enhance_n
             loss = loss / args.iter_size
             loss.backward()
             loss_adv_target_value += loss_adv_target_n_19.item() / args.iter_size
@@ -204,7 +204,7 @@ def main():
             labels = labels.long().to(device)
             r = lightnet(images)
             enhanced_images = images + r
-            loss_enhance = 10 * loss_TV(r) + torch.mean(loss_SSIM(enhanced_images, images)) \
+            loss_enhance_c = 10 * loss_TV(r) + torch.mean(loss_SSIM(enhanced_images, images)) \
                            + torch.mean(loss_exp_z(enhanced_images, mean_light))
 
             if args.model == 'RefineNet':
@@ -213,7 +213,7 @@ def main():
                 _, pred_c = model(enhanced_images)
             pred_c = interp(pred_c)
             loss_seg = seg_loss(pred_c, labels)
-            loss = loss_seg + loss_enhance
+            loss = loss_seg + loss_enhance_c
             loss = loss / args.iter_size
             loss.backward()
             loss_seg_value += loss_seg.item() / args.iter_size
@@ -263,9 +263,10 @@ def main():
         optimizer_D2.step()
 
         print(
-            'iter = {0:8d}/{1:8d}, loss_seg = {2:.3f}, loss_adv = {3:.3f}, loss_D1 = {4:.3f}, loss_D2 = {5:.3f}, loss_pseudo = {6:.3f}'.format(
+            'iter = {0:8d}/{1:8d}, loss_seg = {2:.3f}, loss_adv = {3:.3f}, loss_D1 = {4:.3f}, loss_D2 = {5:.3f}, loss_pseudo = {6:.3f}, loss_enh_d = {7:.3f}, loss_enh_n = {8:.3f}, loss_enh_c = {9:.3f}, '.format(
                 i_iter, args.num_steps, loss_seg_value,
-                loss_adv_target_value, loss_D_value1, loss_D_value2, loss_pseudo))
+                loss_adv_target_value, loss_D_value1, loss_D_value2, loss_pseudo,
+                loss_enhance_d, loss_enhance_n, loss_enhance_c))
 
         if i_iter % args.save_pred_every == 0 and i_iter != 0:
             print('taking snapshot ...')
